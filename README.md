@@ -1,45 +1,45 @@
 # HitungKurs
 
-HitungKurs adalah aplikasi web sederhana untuk menghitung nilai tukar mata uang dengan cepat.
+HitungKurs is a simple web app for quickly calculating currency exchange rates.
 
-## Fitur
+## Features
 
-- Mengonversi nominal dari berbagai mata uang.
-- Mengganti mata uang utama sebagai dasar konversi.
-- Menyimpan mata uang favorit di browser.
-- Mengurutkan daftar mata uang berdasarkan bendera.
-- Memformat angka dengan pemisah ribuan, seperti `1,000,000`.
-- Menyimpan kurs sementara di browser selama 24 jam.
+- Convert amounts between different currencies.
+- Change the base currency used for conversion.
+- Save favorite currencies in the browser.
+- Sort currency lists by their flags.
+- Format numbers with thousands separators, such as `1,000,000`.
+- Cache exchange rates in the browser for 24 hours.
 
-## Teknologi
+## Technology
 
 - React 19
 - TypeScript
 - Vite
 - Tailwind CSS
-- [Frankfurter API](https://www.frankfurter.app/) untuk mengambil kurs terbaru.
+- [Frankfurter API](https://www.frankfurter.app/) for fetching the latest exchange rates.
 
-## Menjalankan Project
+## Running the Project
 
-Pastikan Node.js sudah terpasang, lalu jalankan:
+Make sure Node.js is installed, then run:
 
 ```bash
 npm install
 npm run dev
 ```
 
-Buka alamat lokal yang ditampilkan Vite di terminal.
+Open the local address displayed by Vite in the terminal.
 
-## Perintah Lain
+## Other Commands
 
 ```bash
-npm run build  # Membuat build production
-npm run lint   # Mengecek kode dengan ESLint
-npm run preview # Menjalankan preview build production
+npm run build   # Create a production build
+npm run lint    # Check the code with ESLint
+npm run preview # Preview the production build
 ```
 
-Kurs yang ditampilkan hanya sebagai referensi. Data kurs berasal dari Frankfurter API dan dapat berubah sewaktu-waktu.
+The displayed exchange rates are for reference only. Exchange rate data comes from the Frankfurter API and may change over time.
 
-## Pembuat
+## Author
 
-Dibuat oleh [Awosky](https://faisalhakim.com/).
+Created by [Awosky](https://faisalhakim.com/).
