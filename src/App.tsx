@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { currencies } from "./types/currency";
 import { Header } from "./components/Header";
 import { InputCard } from "./components/InputCard";
@@ -6,28 +6,20 @@ import { ConversionResults } from "./components/ConversionResults";
 import { CurrencyPicker } from "./components/CurrencyPicker";
 import { Footer } from "./components/Footer";
 import { AddCurrency } from "./components/AddCurrency";
-import { getExchangeRates, type ExchangeRates } from "./services/exchangeRate";
 import { useFavoriteCurrencies } from "./hooks/useFavoriteCurrencies";
-
-const BASE_CURRENCY_STORAGE_KEY = "hitung-kurs-base-currency";
-
-const getInitialBaseCurrency = () => {
-  try {
-    const saved = localStorage.getItem(BASE_CURRENCY_STORAGE_KEY);
-    return saved && currencies.some((currency) => currency.code === saved) ? saved : "IDR";
-  } catch (error) {
-    console.error("Failed to load base currency:", error);
-    return "IDR";
-  }
-};
+import { useLocalStorage } from "./hooks/useLocalStorage";
+import { useExchangeRates } from "./hooks/useExchangeRates";
 
 function App() {
-  const [amount, setAmount] = useState("10,000");
-  const [baseCurrency, setBaseCurrency] = useState(getInitialBaseCurrency);
+  const [amount, setAmount] = useLocalStorage("hitung-kurs-amount", "10,000", (value) =>
+    /^\d*(,\d{3})*(\.\d*)?$/.test(value),
+  );
+  const [baseCurrency, setBaseCurrency] = useLocalStorage("hitung-kurs-base-currency", "IDR", (value) =>
+    currencies.some((currency) => currency.code === value),
+  );
   const [pickerOpen, setPickerOpen] = useState(false);
-  const [exchangeRates, setExchangeRates] = useState<ExchangeRates>({});
-  const [loading, setLoading] = useState(false);
   const { favorites, addFavorite, removeFavorite, replaceFavoriteCurrency } = useFavoriteCurrencies();
+  const { rates: exchangeRates, loading } = useExchangeRates(baseCurrency);
 
   const base = currencies.find((currency) => currency.code === baseCurrency)!;
 
@@ -46,27 +38,6 @@ function App() {
     replaceFavoriteCurrency(baseCurrency, nextBaseCurrency);
     setBaseCurrency(nextBaseCurrency);
   };
-
-  useEffect(() => {
-    localStorage.setItem(BASE_CURRENCY_STORAGE_KEY, baseCurrency);
-  }, [baseCurrency]);
-
-  useEffect(() => {
-    async function fetchRates() {
-      setLoading(true);
-      try {
-        const rates = await getExchangeRates(baseCurrency);
-        setExchangeRates(rates);
-      } catch (error) {
-        console.error("Failed to fetch rates:", error);
-        setExchangeRates({});
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    fetchRates();
-  }, [baseCurrency]);
 
   return (
     <main className="min-h-screen bg-zinc-50 text-zinc-900">
