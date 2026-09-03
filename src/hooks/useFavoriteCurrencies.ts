@@ -31,9 +31,7 @@ export function useFavoriteCurrencies() {
   const [favorites, setFavorites] = useState<Currency[]>(getInitialFavorites);
 
   useEffect(() => {
-    if (favorites.length > 0) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(favorites.map((c) => c.code)));
-    }
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(favorites.map((currency) => currency.code)));
   }, [favorites]);
 
   const addFavorite = (currency: Currency) => {

@@ -9,9 +9,21 @@ import { AddCurrency } from "./components/AddCurrency";
 import { getExchangeRates, type ExchangeRates } from "./services/exchangeRate";
 import { useFavoriteCurrencies } from "./hooks/useFavoriteCurrencies";
 
+const BASE_CURRENCY_STORAGE_KEY = "hitung-kurs-base-currency";
+
+const getInitialBaseCurrency = () => {
+  try {
+    const saved = localStorage.getItem(BASE_CURRENCY_STORAGE_KEY);
+    return saved && currencies.some((currency) => currency.code === saved) ? saved : "IDR";
+  } catch (error) {
+    console.error("Failed to load base currency:", error);
+    return "IDR";
+  }
+};
+
 function App() {
   const [amount, setAmount] = useState("10,000");
-  const [baseCurrency, setBaseCurrency] = useState("IDR");
+  const [baseCurrency, setBaseCurrency] = useState(getInitialBaseCurrency);
   const [pickerOpen, setPickerOpen] = useState(false);
   const [exchangeRates, setExchangeRates] = useState<ExchangeRates>({});
   const [loading, setLoading] = useState(false);
@@ -34,6 +46,10 @@ function App() {
     replaceFavoriteCurrency(baseCurrency, nextBaseCurrency);
     setBaseCurrency(nextBaseCurrency);
   };
+
+  useEffect(() => {
+    localStorage.setItem(BASE_CURRENCY_STORAGE_KEY, baseCurrency);
+  }, [baseCurrency]);
 
   useEffect(() => {
     async function fetchRates() {

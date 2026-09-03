@@ -34,6 +34,11 @@ export function InputCard({ amount, baseCurrency, onAmountChange, onCurrencyPick
             inputMode="decimal"
             value={amount}
             onChange={(e) => handleAmountChange(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.currentTarget.blur();
+              }
+            }}
             placeholder="0"
             className="min-w-0 flex-1 bg-transparent text-3xl font-bold outline-none placeholder:text-zinc-300"
           />
