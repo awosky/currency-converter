@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { type Currency } from "../types/currency";
 import { FlagImage } from "./FlagImage";
+import { AnimatePresence, motion } from "framer-motion";
 
 interface AddCurrencyProps {
   availableCurrencies: Currency[];
@@ -76,29 +77,40 @@ export function AddCurrency({
             </svg>
           </button>
 
-          {dropdownOpen && (
-            <div className="absolute top-full left-0 right-0 z-10 mt-2 rounded-2xl border border-zinc-200 bg-white shadow-lg">
-              <div className="max-h-64 overflow-y-auto">
-                {sortedAvailableToAdd.map((currency) => (
-                  <button
-                    key={currency.code}
-                    onClick={() => {
-                      onAddCurrency(currency);
-                      setDropdownOpen(false);
-                    }}
-                    className="flex w-full items-center gap-3 px-4 py-3 text-left transition hover:bg-zinc-50 first:rounded-t-2xl last:rounded-b-2xl"
-                  >
-                    <FlagImage flag={currency.flag} alt={currency.name} />
-                    <div className="flex-1 min-w-0">
-                      <p className="font-semibold text-sm">{currency.code}</p>
-                      <p className="text-xs text-zinc-500 truncate">{currency.name}</p>
-                    </div>
-                    <span className="text-lg text-zinc-300">+</span>
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
+          <AnimatePresence>
+            {dropdownOpen && (
+              <motion.div
+                initial={{ opacity: 0, y: -8, scale: 0.98 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: -6, scale: 0.98 }}
+                transition={{ duration: 0.18 }}
+                className="absolute top-full left-0 right-0 z-10 mt-2 rounded-2xl border border-zinc-200 bg-white shadow-lg"
+              >
+                <div className="max-h-64 overflow-y-auto">
+                  {sortedAvailableToAdd.map((currency) => (
+                    <motion.button
+                      key={currency.code}
+                      initial={{ opacity: 0, x: -8 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ duration: 0.16 }}
+                      onClick={() => {
+                        onAddCurrency(currency);
+                        setDropdownOpen(false);
+                      }}
+                      className="flex w-full items-center gap-3 px-4 py-3 text-left transition hover:bg-zinc-50 first:rounded-t-2xl last:rounded-b-2xl"
+                    >
+                      <FlagImage flag={currency.flag} alt={currency.name} />
+                      <div className="flex-1 min-w-0">
+                        <p className="font-semibold text-sm">{currency.code}</p>
+                        <p className="text-xs text-zinc-500 truncate">{currency.name}</p>
+                      </div>
+                      <span className="text-lg text-zinc-300">+</span>
+                    </motion.button>
+                  ))}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       )}
     </section>
