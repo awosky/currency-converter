@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { type Currency } from "../types/currency";
+import { FlagImage } from "./FlagImage";
 
 interface AddCurrencyProps {
   availableCurrencies: Currency[];
@@ -45,7 +46,7 @@ export function AddCurrency({
         <div className="mb-4 flex flex-wrap gap-2">
           {sortedSelectedCurrencies.map((currency) => (
             <div key={currency.code} className="flex items-center gap-2 rounded-full bg-zinc-100 px-3 py-2">
-              <span className="text-lg">{currency.flag}</span>
+              <FlagImage flag={currency.flag} alt={currency.name} className="h-5 w-7" />
               <span className="text-sm font-medium">{currency.code}</span>
               <button
                 onClick={() => onRemoveCurrency(currency.code)}
@@ -87,7 +88,7 @@ export function AddCurrency({
                     }}
                     className="flex w-full items-center gap-3 px-4 py-3 text-left transition hover:bg-zinc-50 first:rounded-t-2xl last:rounded-b-2xl"
                   >
-                    <span className="text-2xl">{currency.flag}</span>
+                    <FlagImage flag={currency.flag} alt={currency.name} />
                     <div className="flex-1 min-w-0">
                       <p className="font-semibold text-sm">{currency.code}</p>
                       <p className="text-xs text-zinc-500 truncate">{currency.name}</p>

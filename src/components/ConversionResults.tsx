@@ -1,5 +1,6 @@
 import { type Currency } from "../types/currency";
 import { formatAmount } from "../utils/format";
+import { FlagImage } from "./FlagImage";
 
 interface ConversionResultsProps {
   amount: string;
@@ -32,7 +33,7 @@ export function ConversionResults({ amount, baseCurrency, results, isLoading }: 
                   key={currency.code}
                   className="flex items-center gap-3 rounded-2xl border border-zinc-200 bg-white px-4 py-4"
                 >
-                  <span className="text-2xl">{currency.flag}</span>
+                  <FlagImage flag={currency.flag} alt={currency.name} />
 
                   <div className="flex-1">
                     <p className="font-semibold">{currency.code}</p>

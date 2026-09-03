@@ -1,4 +1,5 @@
 import { type Currency } from "../types/currency";
+import { FlagImage } from "./FlagImage";
 
 interface CurrencyPickerProps {
   isOpen: boolean;
@@ -58,7 +59,7 @@ export function CurrencyPicker({
                     selected ? "bg-zinc-100" : "hover:bg-zinc-50"
                   }`}
                 >
-                  <span className="text-3xl">{currency.flag}</span>
+                  <FlagImage flag={currency.flag} alt={currency.name} className="h-7 w-10" />
 
                   <div className="flex-1">
                     <p className="font-semibold">{currency.code}</p>

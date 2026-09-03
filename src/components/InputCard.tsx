@@ -1,4 +1,5 @@
 import { type Currency } from "../types/currency";
+import { FlagImage } from "./FlagImage";
 
 interface InputCardProps {
   amount: string;
@@ -48,7 +49,7 @@ export function InputCard({ amount, baseCurrency, onAmountChange, onCurrencyPick
           onClick={onCurrencyPickerOpen}
           className="mt-4 flex w-full items-center gap-3 rounded-xl bg-white px-3 py-3 text-left transition hover:bg-zinc-50"
         >
-          <span className="text-2xl">{baseCurrency.flag}</span>
+          <FlagImage flag={baseCurrency.flag} alt={baseCurrency.name} />
           <div className="flex-1">
             <p className="font-semibold">{baseCurrency.code}</p>
             <p className="text-xs text-zinc-500">{baseCurrency.name}</p>
