@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { currencies } from "./types/currency";
+import { currencies, type Currency } from "./types/currency";
 import { Header } from "./components/Header";
 import { InputCard } from "./components/InputCard";
 import { ConversionResults } from "./components/ConversionResults";
@@ -30,13 +30,13 @@ function App() {
       rate: exchangeRates[currency.code] || currency.rate,
     }));
 
-  const handleBaseCurrencyChange = (nextBaseCurrency: string) => {
-    if (nextBaseCurrency === baseCurrency) {
+  const handleBaseCurrencyChange = (nextBaseCurrency: Currency) => {
+    if (nextBaseCurrency.code === baseCurrency) {
       return;
     }
 
-    replaceFavoriteCurrency(baseCurrency, nextBaseCurrency);
-    setBaseCurrency(nextBaseCurrency);
+    replaceFavoriteCurrency(baseCurrency, nextBaseCurrency.code);
+    setBaseCurrency(nextBaseCurrency.code);
   };
 
   return (
@@ -65,9 +65,10 @@ function App() {
       </div>
 
       <CurrencyPicker
+        type="select"
         isOpen={pickerOpen}
         currencies={currencies}
-        selectedCurrency={baseCurrency}
+        selectedCurrencies={[baseCurrency]}
         onCurrencySelect={handleBaseCurrencyChange}
         onClose={() => setPickerOpen(false)}
       />

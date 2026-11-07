@@ -4,12 +4,12 @@ import { motion } from "framer-motion";
 
 interface CurrencyPickerButtonProps {
   currency: Currency;
-  selectedCurrency: string;
+  selectedCurrencies: string[];
   handleClose: (currency: Currency) => void;
 }
 
-const CurrencyPickerButton = ({ currency, selectedCurrency, handleClose }: CurrencyPickerButtonProps) => {
-  const selected = currency.code === selectedCurrency;
+const CurrencyPickerButton = ({ currency, selectedCurrencies, handleClose }: CurrencyPickerButtonProps) => {
+  const isSelectedCurrency = selectedCurrencies.includes(currency.code);
 
   return (
     <motion.button
@@ -20,7 +20,7 @@ const CurrencyPickerButton = ({ currency, selectedCurrency, handleClose }: Curre
       }}
       onClick={() => handleClose(currency)}
       className={`flex w-full items-center gap-3 rounded-2xl px-3 py-3 text-left transition ${
-        selected ? "bg-zinc-100" : "hover:bg-zinc-50"
+        isSelectedCurrency ? "bg-zinc-100" : "hover:bg-zinc-50"
       }`}
     >
       <FlagImage flag={currency.flag} alt={currency.name} className="h-7 w-10" />
@@ -31,7 +31,7 @@ const CurrencyPickerButton = ({ currency, selectedCurrency, handleClose }: Curre
         <p className="text-sm text-zinc-500">{currency.name}</p>
       </div>
 
-      {selected && <span className="font-bold">✓</span>}
+      {isSelectedCurrency && <span className="font-bold">✓</span>}
     </motion.button>
   );
 };

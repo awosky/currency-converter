@@ -6,6 +6,8 @@ export type Currency = {
   rate: number;
 };
 
+export type CurrencyType = "select" | "add";
+
 export const currencies: Currency[] = [
   {
     code: "IDR",

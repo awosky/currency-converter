@@ -1,7 +1,8 @@
-import { useState, useRef, useEffect } from "react";
+import { useState } from "react";
 import { type Currency } from "../types/currency";
+import { motion } from "framer-motion";
 import { FlagImage } from "./FlagImage";
-import { AnimatePresence, motion } from "framer-motion";
+import { CurrencyPicker } from "./CurrencyPicker";
 
 interface AddCurrencyProps {
   availableCurrencies: Currency[];
@@ -18,23 +19,10 @@ export function AddCurrency({
   onAddCurrency,
   onRemoveCurrency,
 }: AddCurrencyProps) {
-  const [dropdownOpen, setDropdownOpen] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
+  const [isModalOpen, setModalOpen] = useState(false);
   const selectedCodes = new Set(selectedCurrencies.map((c) => c.code));
-  const availableToAdd = availableCurrencies.filter((c) => !selectedCodes.has(c.code) && c.code !== baseCurrencyCode);
+  const currenciesToAdd = availableCurrencies.filter((c) => !selectedCodes.has(c.code) && c.code !== baseCurrencyCode);
   const sortedSelectedCurrencies = [...selectedCurrencies].sort((a, b) => a.flag.localeCompare(b.flag));
-  const sortedAvailableToAdd = [...availableToAdd].sort((a, b) => a.flag.localeCompare(b.flag));
-
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setDropdownOpen(false);
-      }
-    }
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
 
   return (
     <section className="mt-8">
@@ -62,59 +50,51 @@ export function AddCurrency({
         </div>
       )}
 
-      {availableToAdd.length > 0 && (
-        <div className="relative" ref={dropdownRef}>
-          <button
-            onClick={() => setDropdownOpen(!dropdownOpen)}
-            className="w-full flex items-center justify-between rounded-2xl border border-zinc-200 bg-white px-4 py-3 text-sm transition hover:border-zinc-300 hover:bg-zinc-50"
-          >
-            <span className="text-zinc-600">+ Tambah mata uang</span>
-            <svg
-              className={`h-5 w-5 text-zinc-400 transition ${dropdownOpen ? "rotate-180" : ""}`}
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+      <motion.button
+        type="button"
+        onClick={() => setModalOpen((prev) => !prev)}
+        whileTap={{ scale: 0.985 }}
+        className="group flex w-full items-center justify-between rounded-2xl border border-dashed border-zinc-300 bg-zinc-50/70 px-4 py-3.5 text-sm transition-all duration-200 hover:border-zinc-400 hover:bg-zinc-100"
+      >
+        <span className="flex items-center gap-3">
+          <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-white text-zinc-500 shadow-sm ring-1 ring-zinc-200 transition-all group-hover:text-zinc-900 group-hover:ring-zinc-300">
+            <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 5v14m-7-7h14" />
             </svg>
-          </button>
+          </span>
 
-          <AnimatePresence>
-            {dropdownOpen && (
-              <motion.div
-                initial={{ opacity: 0, y: -8, scale: 0.98 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: -6, scale: 0.98 }}
-                transition={{ duration: 0.18 }}
-                className="absolute top-full left-0 right-0 z-10 mt-2 rounded-2xl border border-zinc-200 bg-white shadow-lg"
-              >
-                <div className="max-h-64 overflow-y-auto">
-                  {sortedAvailableToAdd.map((currency) => (
-                    <motion.button
-                      key={currency.code}
-                      initial={{ opacity: 0, x: -8 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ duration: 0.16 }}
-                      onClick={() => {
-                        onAddCurrency(currency);
-                        setDropdownOpen(false);
-                      }}
-                      className="flex w-full items-center gap-3 px-4 py-3 text-left transition hover:bg-zinc-50 first:rounded-t-2xl last:rounded-b-2xl"
-                    >
-                      <FlagImage flag={currency.flag} alt={currency.name} />
-                      <div className="flex-1 min-w-0">
-                        <p className="font-semibold text-sm">{currency.code}</p>
-                        <p className="text-xs text-zinc-500 truncate">{currency.name}</p>
-                      </div>
-                      <span className="text-lg text-zinc-300">+</span>
-                    </motion.button>
-                  ))}
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
-      )}
+          <span className="flex flex-col items-start gap-0.5">
+            <span className="font-medium text-zinc-700 transition-colors group-hover:text-zinc-950">
+              Tambah mata uang
+            </span>
+            <span className="text-xs text-zinc-400">Pilih mata uang lainnya</span>
+          </span>
+        </span>
+
+        <motion.svg
+          animate={{ rotate: isModalOpen ? 180 : 0 }}
+          transition={{ duration: 0.25, ease: "easeInOut" }}
+          className="h-4 w-4 text-zinc-400"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="m19 9-7 7-7-7" />
+        </motion.svg>
+      </motion.button>
+
+      <CurrencyPicker
+        key={currenciesToAdd.length}
+        type="add"
+        isOpen={isModalOpen}
+        currencies={currenciesToAdd}
+        selectedCurrencies={selectedCurrencies.map((c) => c.code)}
+        onCurrencySelect={(currency) => {
+          onAddCurrency(currency);
+          setModalOpen(false);
+        }}
+        onClose={() => setModalOpen(false)}
+      />
     </section>
   );
 }

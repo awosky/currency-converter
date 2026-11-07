@@ -4,11 +4,11 @@ import type { Currency } from "../../types/currency";
 
 interface CurrencyPickerButtonsProps {
   currencies: Currency[];
-  selectedCurrency: string;
+  selectedCurrencies: string[];
   handleClose: (currency: Currency) => void;
 }
 
-const CurrencyPickerButtons = ({ currencies, selectedCurrency, handleClose }: CurrencyPickerButtonsProps) => {
+const CurrencyPickerButtons = ({ currencies, selectedCurrencies, handleClose }: CurrencyPickerButtonsProps) => {
   return (
     <motion.div
       key="currency-list"
@@ -46,7 +46,11 @@ const CurrencyPickerButtons = ({ currencies, selectedCurrency, handleClose }: Cu
               },
             }}
           >
-            <CurrencyPickerButton currency={currency} selectedCurrency={selectedCurrency} handleClose={handleClose} />
+            <CurrencyPickerButton
+              currency={currency}
+              selectedCurrencies={selectedCurrencies}
+              handleClose={handleClose}
+            />
           </motion.div>
         ))}
     </motion.div>

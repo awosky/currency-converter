@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { type Currency } from "../../types/currency";
+import { type Currency, type CurrencyType } from "../../types/currency";
 import { AnimatePresence, motion } from "framer-motion";
 import CurrencyPickerSearch from "./Search";
 import CurrencyPickerHeader from "./Header";
@@ -7,17 +7,19 @@ import CurrencyPickerNotFound from "./NotFound";
 import CurrencyPickerButtons from "./Buttons";
 
 interface CurrencyPickerProps {
+  type: CurrencyType;
   isOpen: boolean;
   currencies: Currency[];
-  selectedCurrency: string;
-  onCurrencySelect: (currencyCode: string) => void;
+  selectedCurrencies: string[];
+  onCurrencySelect: (currency: Currency) => void;
   onClose: () => void;
 }
 
 export const CurrencyPicker = ({
+  type,
   isOpen,
   currencies,
-  selectedCurrency,
+  selectedCurrencies,
   onCurrencySelect,
   onClose,
 }: CurrencyPickerProps) => {
@@ -34,7 +36,7 @@ export const CurrencyPicker = ({
 
   const handleClose = (currency: Currency) => {
     setFilteredCurrencies(currencies);
-    onCurrencySelect(currency.code);
+    onCurrencySelect(currency);
     onClose();
   };
 
@@ -57,7 +59,7 @@ export const CurrencyPicker = ({
             className="w-full max-w-md rounded-t-3xl bg-white p-5 shadow-xl sm:rounded-3xl h-[70vh] sm:h-[80vh] flex flex-col"
             onClick={(e) => e.stopPropagation()}
           >
-            <CurrencyPickerHeader onClose={onClose} />
+            <CurrencyPickerHeader type={type} onClose={onClose} />
 
             <CurrencyPickerSearch onChangeSearch={onChangeSearch} />
 
@@ -67,7 +69,7 @@ export const CurrencyPicker = ({
               ) : (
                 <CurrencyPickerButtons
                   currencies={filteredCurrencies}
-                  selectedCurrency={selectedCurrency}
+                  selectedCurrencies={selectedCurrencies}
                   handleClose={handleClose}
                 />
               )}
