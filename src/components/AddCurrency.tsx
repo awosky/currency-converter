@@ -49,12 +49,14 @@ export function AddCurrency({
             <div key={currency.code} className="flex items-center gap-2 rounded-full bg-zinc-100 px-3 py-2">
               <FlagImage flag={currency.flag} alt={currency.name} className="h-5 w-7" />
               <span className="text-sm font-medium">{currency.code}</span>
-              <button
-                onClick={() => onRemoveCurrency(currency.code)}
-                className="ml-1 flex h-5 w-5 items-center justify-center rounded-full text-zinc-500 transition hover:bg-zinc-200"
-              >
-                ×
-              </button>
+              {selectedCurrencies.length > 1 && (
+                <button
+                  onClick={() => onRemoveCurrency(currency.code)}
+                  className="ml-1 flex h-5 w-5 items-center justify-center rounded-full text-zinc-500 transition hover:bg-zinc-200"
+                >
+                  ×
+                </button>
+              )}
             </div>
           ))}
         </div>
