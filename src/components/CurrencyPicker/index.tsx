@@ -3,7 +3,8 @@ import { type Currency } from "../../types/currency";
 import { AnimatePresence, motion } from "framer-motion";
 import CurrencyPickerSearch from "./Search";
 import CurrencyPickerHeader from "./Header";
-import CurrencyPickerButton from "./Button";
+import CurrencyPickerNotFound from "./NotFound";
+import CurrencyPickerButtons from "./Buttons";
 
 interface CurrencyPickerProps {
   isOpen: boolean;
@@ -53,33 +54,24 @@ export const CurrencyPicker = ({
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 24, scale: 0.98 }}
             transition={{ type: "spring", stiffness: 380, damping: 30 }}
-            className="w-full max-w-md rounded-t-3xl bg-white p-5 shadow-xl sm:rounded-3xl h-[50vh] sm:h-[80vh] flex flex-col"
+            className="w-full max-w-md rounded-t-3xl bg-white p-5 shadow-xl sm:rounded-3xl h-[70vh] sm:h-[80vh] flex flex-col"
             onClick={(e) => e.stopPropagation()}
           >
             <CurrencyPickerHeader onClose={onClose} />
 
             <CurrencyPickerSearch onChangeSearch={onChangeSearch} />
 
-            <motion.div
-              className="space-y-1 overflow-y-auto min-h-0"
-              initial="hidden"
-              animate="visible"
-              variants={{
-                hidden: {},
-                visible: { transition: { staggerChildren: 0.025 } },
-              }}
-            >
-              {[...filteredCurrencies]
-                .sort((a, b) => a.flag.localeCompare(b.flag))
-                .map((currency) => (
-                  <CurrencyPickerButton
-                    key={currency.code}
-                    currency={currency}
-                    selectedCurrency={selectedCurrency}
-                    handleClose={handleClose}
-                  />
-                ))}
-            </motion.div>
+            <AnimatePresence mode="wait">
+              {filteredCurrencies.length === 0 ? (
+                <CurrencyPickerNotFound />
+              ) : (
+                <CurrencyPickerButtons
+                  currencies={filteredCurrencies}
+                  selectedCurrency={selectedCurrency}
+                  handleClose={handleClose}
+                />
+              )}
+            </AnimatePresence>
           </motion.div>
         </motion.div>
       )}
