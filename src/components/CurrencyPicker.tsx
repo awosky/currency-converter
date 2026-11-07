@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { type Currency } from "../types/currency";
 import { FlagImage } from "./FlagImage";
 import { AnimatePresence, motion } from "framer-motion";
@@ -17,6 +18,23 @@ export function CurrencyPicker({
   onCurrencySelect,
   onClose,
 }: CurrencyPickerProps) {
+  const [filteredCurrencies, setFilteredCurrencies] = useState<Currency[]>(currencies);
+
+  const onChangeSearch = (searchTerm: string) => {
+    const filtered = currencies.filter(
+      (currency) =>
+        currency.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        currency.code.toLowerCase().includes(searchTerm.toLowerCase()),
+    );
+    setFilteredCurrencies(filtered);
+  };
+
+  const handleClose = (currency: Currency) => {
+    setFilteredCurrencies(currencies);
+    onCurrencySelect(currency.code);
+    onClose();
+  };
+
   return (
     <AnimatePresence>
       {isOpen && (
@@ -33,7 +51,7 @@ export function CurrencyPicker({
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 24, scale: 0.98 }}
             transition={{ type: "spring", stiffness: 380, damping: 30 }}
-            className="w-full max-w-md rounded-t-3xl bg-white p-5 shadow-xl sm:rounded-3xl max-h-[85vh] flex flex-col"
+            className="w-full max-w-md rounded-t-3xl bg-white p-5 shadow-xl sm:rounded-3xl h-[50vh] sm:h-[80vh] flex flex-col"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="mx-auto mb-5 h-1.5 w-10 rounded-full bg-zinc-200 sm:hidden" />
@@ -51,6 +69,16 @@ export function CurrencyPicker({
               </button>
             </div>
 
+            <div>
+              <input
+                type="text"
+                placeholder="Cari mata uang..."
+                className="w-full rounded-2xl border border-zinc-200 bg-zinc-50 px-4 py-3 text-sm placeholder:text-zinc-400 focus:border-zinc-300 focus:outline-none focus:ring-1 focus:ring-zinc-300 mt-0 mb-5"
+                onClick={(e) => e.stopPropagation()}
+                onChange={(e) => onChangeSearch(e.target.value.toLowerCase())}
+              />
+            </div>
+
             <motion.div
               className="space-y-1 overflow-y-auto min-h-0"
               initial="hidden"
@@ -60,7 +88,7 @@ export function CurrencyPicker({
                 visible: { transition: { staggerChildren: 0.025 } },
               }}
             >
-              {[...currencies]
+              {[...filteredCurrencies]
                 .sort((a, b) => a.flag.localeCompare(b.flag))
                 .map((currency) => {
                   const selected = currency.code === selectedCurrency;
@@ -72,10 +100,7 @@ export function CurrencyPicker({
                         hidden: { opacity: 0, x: -8 },
                         visible: { opacity: 1, x: 0 },
                       }}
-                      onClick={() => {
-                        onCurrencySelect(currency.code);
-                        onClose();
-                      }}
+                      onClick={() => handleClose(currency)}
                       className={`flex w-full items-center gap-3 rounded-2xl px-3 py-3 text-left transition ${
                         selected ? "bg-zinc-100" : "hover:bg-zinc-50"
                       }`}
